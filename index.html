@@ -1,0 +1,714 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Command Center Lite - Gestion de tournois TCG</title>
+    <meta name="description" content="Un outil simple pour les boutiques TCG : gérez vos tournois et suivez vos revenus en quelques clics.">
+
+    <!-- ================================================
+         STYLES CSS - Command Center Lite Landing Page
+         ================================================ -->
+    <style>
+        /* ===========================================
+           VARIABLES CSS - Couleurs et espacements
+           Modifiez ces valeurs pour personnaliser le thème
+           =========================================== */
+        :root {
+            --primary-color: #1e3a5f;      /* Bleu nuit - élégant et pro */
+            --primary-hover: #152a45;      /* Bleu nuit foncé au survol */
+            --secondary-color: #1a1a2e;    /* Bleu très foncé - textes */
+            --accent-color: #d4a017;       /* Or - évoque les cartes rares/mythiques */
+            --accent-hover: #b8860b;       /* Or foncé au survol */
+            --background-light: #f5f3ef;   /* Fond parchemin/crème */
+            --background-white: #fffef9;   /* Blanc cassé chaud */
+            --text-muted: #5a6272;         /* Texte secondaire */
+            --border-color: #e0ddd5;       /* Bordures parchemin */
+            --shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+            --shadow-lg: 0 10px 15px -3px rgba(0, 0, 0, 0.15);
+            --radius: 12px;                /* Arrondis des coins */
+            --max-width: 1100px;           /* Largeur max du contenu */
+        }
+
+        /* ===========================================
+           RESET ET BASE
+           =========================================== */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        html {
+            scroll-behavior: smooth;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, sans-serif;
+            line-height: 1.6;
+            color: var(--secondary-color);
+            background-color: var(--background-light);
+        }
+
+        /* ===========================================
+           HEADER - Logo et navigation
+           =========================================== */
+        header {
+            background-color: var(--background-white);
+            padding: 1rem 2rem;
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            z-index: 100;
+            box-shadow: var(--shadow);
+        }
+
+        .header-content {
+            max-width: var(--max-width);
+            margin: 0 auto;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .logo {
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: var(--primary-color);
+            text-decoration: none;
+        }
+
+        .logo span {
+            color: var(--secondary-color);
+        }
+
+        .nav-cta {
+            background-color: var(--primary-color);
+            color: white;
+            padding: 0.6rem 1.2rem;
+            border-radius: 8px;
+            text-decoration: none;
+            font-weight: 500;
+            transition: background-color 0.3s ease;
+        }
+
+        .nav-cta:hover {
+            background-color: var(--primary-hover);
+        }
+
+        /* ===========================================
+           SECTION HERO - Titre principal
+           =========================================== */
+        .hero {
+            padding: 8rem 2rem 4rem;
+            text-align: center;
+            background: linear-gradient(135deg, #fffef9 0%, #f5f3ef 100%);
+        }
+
+        .hero-content {
+            max-width: 800px;
+            margin: 0 auto;
+        }
+
+        /* Badge au-dessus du titre */
+        .badge {
+            display: inline-block;
+            background-color: rgba(99, 102, 241, 0.1);
+            color: var(--primary-color);
+            padding: 0.4rem 1rem;
+            border-radius: 20px;
+            font-size: 0.875rem;
+            font-weight: 600;
+            margin-bottom: 1.5rem;
+        }
+
+        /* Titre principal H1 */
+        .hero h1 {
+            font-size: 2.75rem;
+            font-weight: 800;
+            line-height: 1.2;
+            margin-bottom: 1.5rem;
+            color: var(--secondary-color);
+        }
+
+        /* Mise en évidence dans le titre */
+        .hero h1 .highlight {
+            color: var(--primary-color);
+        }
+
+        /* Sous-titre explicatif */
+        .hero .subtitle {
+            font-size: 1.25rem;
+            color: var(--text-muted);
+            max-width: 650px;
+            margin: 0 auto 2rem;
+        }
+
+        /* ===========================================
+           SECTION BENEFICES - Bullet points
+           =========================================== */
+        .benefits {
+            padding: 4rem 2rem;
+            background-color: var(--background-light);
+        }
+
+        .benefits-content {
+            max-width: var(--max-width);
+            margin: 0 auto;
+        }
+
+        .benefits h2 {
+            text-align: center;
+            font-size: 2rem;
+            margin-bottom: 3rem;
+            color: var(--secondary-color);
+        }
+
+        /* Grille des cartes de bénéfices */
+        .benefits-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 2rem;
+        }
+
+        /* Carte individuelle */
+        .benefit-card {
+            background-color: var(--background-light);
+            padding: 2rem;
+            border-radius: var(--radius);
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+
+        .benefit-card:hover {
+            transform: translateY(-5px);
+            box-shadow: var(--shadow-lg);
+        }
+
+        /* Icône de la carte */
+        .benefit-icon {
+            width: 50px;
+            height: 50px;
+            background-color: var(--primary-color);
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-bottom: 1rem;
+            font-size: 1.5rem;
+        }
+
+        .benefit-card h3 {
+            font-size: 1.125rem;
+            margin-bottom: 0.5rem;
+            color: var(--secondary-color);
+        }
+
+        .benefit-card p {
+            color: var(--text-muted);
+            font-size: 0.95rem;
+        }
+
+        /* ===========================================
+           SECTION FORMULAIRE - Pré-inscription
+           =========================================== */
+        .signup {
+            padding: 5rem 2rem;
+            background: linear-gradient(135deg, #1e3a5f 0%, #2d5a87 100%);
+        }
+
+        .signup-content {
+            max-width: 600px;
+            margin: 0 auto;
+        }
+
+        .signup h2 {
+            text-align: center;
+            color: white;
+            font-size: 2rem;
+            margin-bottom: 0.5rem;
+        }
+
+        .signup .subtitle {
+            text-align: center;
+            color: rgba(255, 255, 255, 0.85);
+            margin-bottom: 2rem;
+        }
+
+        /* Conteneur du formulaire */
+        .form-container {
+            background-color: var(--background-white);
+            padding: 2.5rem;
+            border-radius: var(--radius);
+            box-shadow: var(--shadow-lg);
+        }
+
+        /* Groupe de champs */
+        .form-group {
+            margin-bottom: 1.5rem;
+        }
+
+        .form-group label {
+            display: block;
+            font-weight: 600;
+            margin-bottom: 0.5rem;
+            color: var(--secondary-color);
+        }
+
+        /* Indicateur champ requis */
+        .required {
+            color: #ef4444;
+        }
+
+        /* Champs de saisie */
+        .form-group input,
+        .form-group select,
+        .form-group textarea {
+            width: 100%;
+            padding: 0.875rem 1rem;
+            border: 2px solid var(--border-color);
+            border-radius: 8px;
+            font-size: 1rem;
+            transition: border-color 0.3s ease, box-shadow 0.3s ease;
+            font-family: inherit;
+        }
+
+        .form-group input:focus,
+        .form-group select:focus,
+        .form-group textarea:focus {
+            outline: none;
+            border-color: var(--primary-color);
+            box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.1);
+        }
+
+        .form-group textarea {
+            min-height: 100px;
+            resize: vertical;
+        }
+
+        /* Bouton de soumission */
+        .submit-btn {
+            width: 100%;
+            padding: 1rem;
+            background-color: var(--primary-color);
+            color: white;
+            border: none;
+            border-radius: 8px;
+            font-size: 1.1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: background-color 0.3s ease, transform 0.2s ease;
+        }
+
+        .submit-btn:hover {
+            background-color: var(--primary-hover);
+            transform: translateY(-2px);
+        }
+
+        .submit-btn:active {
+            transform: translateY(0);
+        }
+
+        /* ===========================================
+           CTA SECONDAIRE - Sous le formulaire
+           =========================================== */
+        .cta-section {
+            padding: 4rem 2rem;
+            text-align: center;
+            background-color: var(--background-light);
+        }
+
+        .cta-section p {
+            font-size: 1.5rem;
+            font-weight: 600;
+            color: var(--secondary-color);
+            max-width: 700px;
+            margin: 0 auto 1.5rem;
+        }
+
+        .cta-button {
+            display: inline-block;
+            background-color: var(--accent-color);
+            color: white;
+            padding: 1rem 2.5rem;
+            border-radius: 8px;
+            text-decoration: none;
+            font-weight: 600;
+            font-size: 1.1rem;
+            transition: background-color 0.3s ease, transform 0.2s ease;
+        }
+
+        .cta-button:hover {
+            background-color: var(--accent-hover);
+            transform: translateY(-2px);
+        }
+
+        /* ===========================================
+           SECTION POURQUOI NOUS - Crédibilité
+           =========================================== */
+        .why-us {
+            padding: 4rem 2rem;
+            background-color: var(--background-light);
+            text-align: center;
+        }
+
+        .why-us-content {
+            max-width: 800px;
+            margin: 0 auto;
+        }
+
+        .why-us h2 {
+            font-size: 1.75rem;
+            margin-bottom: 1rem;
+            color: var(--secondary-color);
+        }
+
+        .why-us p {
+            font-size: 1.125rem;
+            color: var(--text-muted);
+            line-height: 1.8;
+        }
+
+        /* Mise en avant texte */
+        .why-us strong {
+            color: var(--primary-color);
+        }
+
+        /* ===========================================
+           FOOTER
+           =========================================== */
+        footer {
+            background-color: var(--secondary-color);
+            color: rgba(255, 255, 255, 0.7);
+            padding: 2rem;
+            text-align: center;
+        }
+
+        footer p {
+            font-size: 0.9rem;
+        }
+
+        footer a {
+            color: var(--primary-color);
+            text-decoration: none;
+        }
+
+        /* ===========================================
+           RESPONSIVE - Adaptation mobile
+           =========================================== */
+        @media (max-width: 768px) {
+            /* Header mobile */
+            .header-content {
+                flex-direction: column;
+                gap: 1rem;
+            }
+
+            /* Hero mobile */
+            .hero {
+                padding: 7rem 1.5rem 3rem;
+            }
+
+            .hero h1 {
+                font-size: 2rem;
+            }
+
+            .hero .subtitle {
+                font-size: 1.1rem;
+            }
+
+            /* Bénéfices mobile */
+            .benefits {
+                padding: 3rem 1.5rem;
+            }
+
+            .benefits h2 {
+                font-size: 1.5rem;
+            }
+
+            /* Formulaire mobile */
+            .signup {
+                padding: 3rem 1.5rem;
+            }
+
+            .form-container {
+                padding: 1.5rem;
+            }
+
+            /* CTA mobile */
+            .cta-section p {
+                font-size: 1.25rem;
+            }
+
+            /* Why us mobile */
+            .why-us h2 {
+                font-size: 1.5rem;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .hero h1 {
+                font-size: 1.75rem;
+            }
+
+            .benefit-card {
+                padding: 1.5rem;
+            }
+
+            .cta-button {
+                padding: 0.875rem 1.5rem;
+                font-size: 1rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- ================================================
+         HEADER - Navigation fixe
+         ================================================ -->
+    <header>
+        <div class="header-content">
+            <a href="#" class="logo">Command Center <span>Lite</span></a>
+            <a href="#signup" class="nav-cta">Rejoindre la beta</a>
+        </div>
+    </header>
+
+    <!-- ================================================
+         HERO - Section principale avec titre accrocheur
+         ================================================ -->
+    <section class="hero">
+        <div class="hero-content">
+            <span class="badge">Beta ouverte bientôt</span>
+            <h1>
+                Gérez vos tournois TCG et suivez vos revenus
+                <span class="highlight">en quelques clics.</span>
+            </h1>
+            <p class="subtitle">
+                Un outil simple et intuitif pour les petites boutiques TCG,
+                qui centralise l'organisation des tournois et le suivi des revenus,
+                sans perdre de temps avec Excel ou logiciels complexes.
+            </p>
+        </div>
+    </section>
+
+    <!-- ================================================
+         BENEFICES - Les 4 avantages cles
+         ================================================ -->
+    <section class="benefits">
+        <div class="benefits-content">
+            <h2>Tout ce dont vous avez besoin</h2>
+            <div class="benefits-grid">
+                <!-- Benefice 1 : Planification -->
+                <div class="benefit-card">
+                    <div class="benefit-icon">
+                        <svg width="24" height="24" fill="none" stroke="white" stroke-width="2" viewBox="0 0 24 24">
+                            <rect x="3" y="4" width="18" height="18" rx="2" ry="2"/>
+                            <line x1="16" y1="2" x2="16" y2="6"/>
+                            <line x1="8" y1="2" x2="8" y2="6"/>
+                            <line x1="3" y1="10" x2="21" y2="10"/>
+                        </svg>
+                    </div>
+                    <h3>Planification simplifiée</h3>
+                    <p>Créez et gérez vos tournois en quelques clics. Fini les tableaux Excel compliqués.</p>
+                </div>
+
+                <!-- Benefice 2 : Revenus -->
+                <div class="benefit-card">
+                    <div class="benefit-icon">
+                        <svg width="24" height="24" fill="none" stroke="white" stroke-width="2" viewBox="0 0 24 24">
+                            <line x1="12" y1="1" x2="12" y2="23"/>
+                            <path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/>
+                        </svg>
+                    </div>
+                    <h3>Suivi des revenus en temps réel</h3>
+                    <p>Visualisez vos gains instantanément. Gardez un œil sur la rentabilité de chaque événement.</p>
+                </div>
+
+                <!-- Benefice 3 : Rapidite -->
+                <div class="benefit-card">
+                    <div class="benefit-icon">
+                        <svg width="24" height="24" fill="none" stroke="white" stroke-width="2" viewBox="0 0 24 24">
+                            <polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/>
+                        </svg>
+                    </div>
+                    <h3>Rapide à mettre en place</h3>
+                    <p>Pas de configuration complexe. Commencez à utiliser l'outil dès les premières minutes.</p>
+                </div>
+
+                <!-- Benefice 4 : Essentiel -->
+                <div class="benefit-card">
+                    <div class="benefit-icon">
+                        <svg width="24" height="24" fill="none" stroke="white" stroke-width="2" viewBox="0 0 24 24">
+                            <circle cx="12" cy="12" r="10"/>
+                            <polyline points="12 6 12 12 16 14"/>
+                        </svg>
+                    </div>
+                    <h3>Focus sur l'essentiel</h3>
+                    <p>Uniquement les fonctionnalités dont vous avez besoin. Simple, efficace, sans superflu.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- ================================================
+         FORMULAIRE - Pre-inscription beta
+         ================================================ -->
+    <section class="signup" id="signup">
+        <div class="signup-content">
+            <h2>Rejoignez la beta</h2>
+            <p class="subtitle">Soyez parmi les premiers à tester Command Center Lite</p>
+
+            <div class="form-container">
+                <form action="https://formspree.io/f/mgolwjzy" method="POST" id="beta-form">
+                    <!--
+                        IMPORTANT: Remplacez VOTRE_ID_FORMSPREE par votre ID Formspree
+                        1. Créez un compte sur https://formspree.io
+                        2. Créez un nouveau formulaire
+                        3. Copiez l'ID (ex: xrgvqkpl) et remplacez VOTRE_ID_FORMSPREE
+                    -->
+
+                    <!-- Champ caché pour le sujet de l'email -->
+                    <input type="hidden" name="_subject" value="Nouvelle inscription beta - Command Center Lite">
+
+                    <!-- Nom de la boutique -->
+                    <div class="form-group">
+                        <label for="shop-name">
+                            Nom de la boutique <span class="required">*</span>
+                        </label>
+                        <input
+                            type="text"
+                            id="shop-name"
+                            name="shop_name"
+                            placeholder="Ex: La Guilde du Dragon"
+                            required
+                        >
+                    </div>
+
+                    <!-- Email -->
+                    <div class="form-group">
+                        <label for="email">
+                            Email <span class="required">*</span>
+                        </label>
+                        <input
+                            type="email"
+                            id="email"
+                            name="email"
+                            placeholder="contact@maboutique.fr"
+                            required
+                        >
+                    </div>
+
+                    <!-- Taille de la boutique -->
+                    <div class="form-group">
+                        <label for="shop-size">
+                            Taille de la boutique <span class="required">*</span>
+                        </label>
+                        <select id="shop-size" name="shop_size" required>
+                            <option value="" disabled selected>Sélectionnez une option</option>
+                            <option value="solo">Solo (1 personne)</option>
+                            <option value="small">Petite (2-5 personnes)</option>
+                            <option value="medium">Moyenne (6-15 personnes)</option>
+                            <option value="large">Grande (15+ personnes)</option>
+                        </select>
+                    </div>
+
+                    <!-- Commentaires -->
+                    <div class="form-group">
+                        <label for="comments">
+                            Commentaires / Besoins spécifiques
+                        </label>
+                        <textarea
+                            id="comments"
+                            name="comments"
+                            placeholder="Décrivez vos besoins ou vos attentes..."
+                        ></textarea>
+                    </div>
+
+                    <!-- Bouton de soumission -->
+                    <button type="submit" class="submit-btn">
+                        Rejoindre la beta
+                    </button>
+                </form>
+            </div>
+        </div>
+    </section>
+
+    <!-- ================================================
+         CTA SECONDAIRE - Appel a l'action
+         ================================================ -->
+    <section class="cta-section">
+        <p>Rejoignez la beta et simplifiez dès maintenant la gestion de vos tournois !</p>
+        <a href="#signup" class="cta-button">Je m'inscris maintenant</a>
+    </section>
+
+    <!-- ================================================
+         POURQUOI NOUS - Section credibilite
+         ================================================ -->
+    <section class="why-us">
+        <div class="why-us-content">
+            <h2>Pourquoi Command Center Lite ?</h2>
+            <p>
+                Conçu <strong>par des passionnés de TCG pour des passionnés de TCG</strong>,
+                Command Center Lite est né d'un constat simple : les boutiques perdent trop de temps
+                avec des outils inadaptés. Notre mission est de vous offrir un outil qui
+                <strong>fonctionne vraiment</strong>, sans courbe d'apprentissage,
+                pour que vous puissiez vous concentrer sur ce qui compte :
+                <strong>votre communauté et vos joueurs</strong>.
+            </p>
+        </div>
+    </section>
+
+    <!-- ================================================
+         FOOTER
+         ================================================ -->
+    <footer>
+        <p>&copy; 2025 Command Center Lite. Tous droits réservés.</p>
+    </footer>
+
+    <!-- ================================================
+         JAVASCRIPT - Soumission AJAX via Formspree
+         ================================================ -->
+    <script>
+        const form = document.getElementById('beta-form');
+        const submitBtn = form.querySelector('.submit-btn');
+
+        form.addEventListener('submit', async function(e) {
+            e.preventDefault();
+
+            // Désactiver le bouton pendant l'envoi
+            submitBtn.disabled = true;
+            submitBtn.textContent = 'Envoi en cours...';
+
+            try {
+                const response = await fetch(form.action, {
+                    method: 'POST',
+                    body: new FormData(form),
+                    headers: {
+                        'Accept': 'application/json'
+                    }
+                });
+
+                if (response.ok) {
+                    // Succès : afficher message et réinitialiser
+                    form.innerHTML = `
+                        <div style="text-align: center; padding: 2rem;">
+                            <svg width="64" height="64" fill="none" stroke="#d4a017" stroke-width="2" viewBox="0 0 24 24" style="margin: 0 auto 1rem;">
+                                <circle cx="12" cy="12" r="10"/>
+                                <polyline points="9 12 12 15 16 10"/>
+                            </svg>
+                            <h3 style="color: #1e293b; margin-bottom: 0.5rem;">Merci pour votre inscription !</h3>
+                            <p style="color: #64748b;">Nous vous contacterons très bientôt pour vous donner accès à la beta.</p>
+                        </div>
+                    `;
+                } else {
+                    throw new Error('Erreur lors de l\'envoi');
+                }
+            } catch (error) {
+                // Erreur : réactiver le bouton
+                submitBtn.disabled = false;
+                submitBtn.textContent = 'Rejoindre la beta';
+                alert('Une erreur est survenue. Veuillez réessayer.');
+            }
+        });
+    </script>
+</body>
+</html>
